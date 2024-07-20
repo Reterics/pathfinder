@@ -3,7 +3,7 @@
 Chrome Extension to assist for development and day to day tasks.
 It is based on Vite, React, TailwindCSS, and TypeScript.
 
-
+![FrontPage](./docs/front.png)
 
 ## Getting started
 
