@@ -14,6 +14,8 @@
     "package.json",
     "define.config.ts",
     "vite.config.ts",
-    "manifest.config.ts"
+    "vite.firefox.config.ts",
+    "manifest.config.ts",
+    "manifest.firefox.config.ts"
   ]
 }

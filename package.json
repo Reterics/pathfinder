@@ -7,8 +7,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "package": "npm run build && node package.js",
+    "build": "tsc -b && npm run build:chrome && npm run build:firefox",
+    "build:chrome": "vite build",
+    "build:firefox": "vite build -c vite.firefox.config.js",
+    "package": "npm run package:chrome && npm run package:firefox",
+    "package:chrome": "node package.js chrome",
+    "package:firefox": "node package.js firefox",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -26,6 +30,7 @@
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "@types/node": "20.14.11",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",

@@ -23,5 +23,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
+  "exclude": ["dist", "node_modules", "chrome", "firefox"],
   "include": ["src"]
 }

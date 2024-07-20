@@ -11,6 +11,7 @@ export default defineConfig({
     crx({ manifest }),
   ],
   build: {
-    emptyOutDir: true
+    emptyOutDir: true,
+    outDir: 'chrome'
   }
 })
