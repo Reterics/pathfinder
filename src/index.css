@@ -15,3 +15,11 @@ body {
   height: 454px; /*394*/
   width: 690px; /*690*/
 }
+
+.bg-app {
+  background-color: #1d1d1d;
+}
+
+.bg-app-gray-700 {
+  background-color: rgb(57 57 57);
+}

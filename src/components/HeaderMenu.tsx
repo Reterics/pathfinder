@@ -1,9 +1,18 @@
-import {Outlet, Link, useLocation} from "react-router-dom";
+import {Outlet, useLocation} from "react-router-dom";
+import background from "../assets/background.png";
+import logoBackground from "../assets/logo_background.png";
+import logoWhite from "../assets/logo_white_48.png";
+import MenuBar from "./menu/MenuBar.tsx";
+import {MenuItemProps} from "../types/ui.ts";
 
 const menu = [
     {
         path: '/',
         name: 'Home',
+    },
+    {
+        path: '/scripts',
+        name: 'Scripts',
     },
     {
         path: '/about',
@@ -13,37 +22,34 @@ const menu = [
 
 const HeaderMenu = () => {
     const location = useLocation();
-    const { pathname } = location;
+    const pathname = location.pathname === '/index.html' ? '/' : location.pathname;
+
+    const menuItems: MenuItemProps[] = menu.map((m, index) => {
+        return {
+            key: 'menu_'+index,
+            path: m.path,
+            name: m.name,
+            active: m.path === pathname
+        } as MenuItemProps;
+    });
 
     return (
         <>
-        <nav className="bg-gray-900 border-gray-200 w-[690px]">
-            <div className="flex flex-wrap items-center justify-between mx-auto p-4">
-                <a href="https://reterics.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
-                    <img src="../src/assets/logo_white_48.png" className="h-8" alt="Pathfinder Logo" />
-                        <span className="self-center text-2xl font-semibold whitespace-nowrap text-white">Pathfinder</span>
-                </a>
-                <div className="block w-auto">
-                    <ul className="font-medium flex p-0 rounded-lg flex-row space-x-4 rtl:space-x-reverse mt-0 bg-gray-900">
-                        {menu.map((item, index) =>
-                            item.path === pathname ?
-                                (<li>
-                                    <Link key={"menu-"+index}
-                                          className="block py-2 px-3 rounded text-white bg-gray-700"
-                                       to={item.path}>{item.name}</Link>
-                                </li>)
-                                : (<li>
-                                    <Link key={"menu-" + index}
-                                          className="block py-2 px-3 rounded text-white hover:bg-gray-700"
-                                          to={item.path}>{item.name}</Link>
-                                </li>)
-                        )}
-
-                    </ul>
+        <img src={pathname === '/' ? logoBackground : background} className="absolute w-full pointer-events-none z-0 mt-[66px]"
+             style={{
+                 height: '-webkit-fill-available'
+             }} alt="Background"/>
+            <nav className="bg-app border-gray-200 w-[690px]">
+                <div className="flex flex-wrap items-center justify-between mx-auto p-4">
+                    <a href="https://reterics.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
+                        <img src={logoWhite} className="h-8" alt="Pathfinder Logo"/>
+                        <span
+                            className="self-center text-2xl font-semibold whitespace-nowrap text-white">Pathfinder</span>
+                    </a>
+                    <MenuBar menu={menuItems} />
                 </div>
-            </div>
-        </nav>
-        <Outlet />
+            </nav>
+            <Outlet/>
         </>
     )
 }

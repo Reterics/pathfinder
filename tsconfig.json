@@ -1,4 +1,10 @@
 {
+  "compilerOptions": {
+    "types": [
+      "webextension-polyfill",
+      "chrome-types"
+    ]
+  },
   "files": [],
   "references": [
     {
