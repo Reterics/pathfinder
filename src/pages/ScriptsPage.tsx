@@ -2,6 +2,9 @@ import {useContext, useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import {InjectedScript, ScriptKeys} from "../types/scripts.ts";
 import {BrowserContext} from "../components/BrowserContext.ts";
+import PFButtonGroup from "../components/PFButtonGroup.tsx";
+import {ButtonProps} from "../types/ui.ts";
+import {downloadJSON, readTextFile} from "../utils/common.ts";
 
 
 const ScriptsPage = () => {
@@ -23,7 +26,6 @@ const ScriptsPage = () => {
     const deleteEntry = (index: number) => {
         setEntries([...entries.filter((_entry, _index) => {
             return _index !== index;
-
         })])
     };
 
@@ -39,6 +41,61 @@ const ScriptsPage = () => {
         void refreshEntries();
     }, []);
 
+    const buttons: ButtonProps[] = [
+        {
+            content: 'Add',
+            onClick: async () => {
+                setEntries([...entries, {
+                    name: '',
+                    content: '',
+                    origin: 'http(s)?:\\/\\/.+\\.com',
+                    keyBind: ''
+                }])
+            }
+        },
+        {
+            content: 'Download',
+            onClick: async () => {
+                downloadJSON(entries, `entries${new Date().getTime()}.json`);
+            }
+        },
+        {
+            content: 'Load',
+            onClick: async () => {
+                const file = await readTextFile();
+                if (!file || typeof file.value !== 'string') return;
+
+                let data;
+                try {
+                    data = JSON.parse(file.value);
+                } catch (e) {
+                    console.error(e);
+                }
+
+                if (!Array.isArray(data) || !data.length) return;
+
+                setEntries(data.map((d, index) => {
+                    if (typeof d.keyBind === 'string' &&
+                        typeof d.content === 'string' && d.content && d.keyBind) {
+                        return {
+                            keyBind: d.keyBind,
+                            content: d.content,
+                            origin: d.origin,
+                            name: d.name && typeof d.name === 'string' ? d.name : index.toString(),
+                            id: typeof d.id === "number" ? d.id : index + 1
+                        } as InjectedScript
+                    }
+                    return null;
+                }).filter(d => d) as InjectedScript[]);
+            }
+        },
+        {
+            content: 'Clear',
+            onClick: async () => {
+                setEntries([]);
+            }
+        }
+    ];
     return (
         <div className="relative overflow-x-auto shadow-md">
             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -96,6 +153,7 @@ const ScriptsPage = () => {
             </table>
 
             <div className="bg-white dark:bg-gray-900 w-100 p-1 flex items-center justify-between flex-row-reverse">
+                <PFButtonGroup buttons={buttons}/>
                 <div className="inline-flex rounded-md shadow-sm" role="group">
                 </div>
             </div>
