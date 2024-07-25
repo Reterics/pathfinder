@@ -13,9 +13,10 @@ export interface MenuBarProps {
 }
 
 export interface ButtonProps {
-    onClick: ()=>void;
+    onClick?: ()=>void;
     content: string|ReactNode|undefined;
-    className?: string
+    className?: string;
+    to?: string
 }
 export interface ButtonGroupProps {
     buttons: ButtonProps[];

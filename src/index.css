@@ -16,10 +16,9 @@ body {
   width: 690px; /*690*/
 }
 
-.bg-app {
-  background-color: #1d1d1d;
-}
 
-.bg-app-gray-700 {
-  background-color: rgb(57 57 57);
+@layer components {
+  .pf-button {
+    @apply px-4 py-2 text-sm font-medium text-zinc-900 bg-white border-zinc-200 hover:bg-zinc-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white dark:hover:text-white dark:hover:bg-zinc-700 dark:focus:ring-blue-500 dark:focus:text-white
+  }
 }
