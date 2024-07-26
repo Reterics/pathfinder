@@ -23,11 +23,23 @@ export default defineManifest(async (env) => ({
         service_worker: 'src/background/index.ts',
         type: 'module',
     },
-    content_scripts: [],
+    content_scripts: [
+        {
+            all_frames: false,
+            js: ['src/content-script/index.ts'],
+            matches: ['*://*/*'],
+            run_at: 'document_end',
+        }
+    ],
     offline_enabled: false,
     host_permissions: [],
     permissions: ['storage', 'tabs', 'background', "scripting", "activeTab"],
-    web_accessible_resources: [],
+    web_accessible_resources: [
+        {
+            matches: ['*://*/*'],
+            resources: ['src/content-script/index.ts'],
+        }
+    ],
     icons: {
         16:  'src/assets/logo_white_16.png',
         32:  'src/assets/logo_white_32.png',
