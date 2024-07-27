@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react";
+import {useContext} from "react";
 import {InjectedScript, ScriptKeys} from "../types/scripts.ts";
 import {BrowserContext} from "../components/BrowserContext.ts";
 import PFButtonGroup from "../components/PFButtonGroup.tsx";
@@ -12,9 +12,11 @@ const ScriptsPage = () => {
 
     const context = useContext(BrowserContext);
 
-    const [entries, setEntries] = useState<InjectedScript[]>([]);
+    const entries = context?.data.entries || [];
+    const setEntries = (data: InjectedScript[]) => {
+        context?.setData('entries', data);
+    };
 
-    const saveEntriesInStore = async () => context?.chrome.storage.local.set({entries:entries});
     const updateEntry = useDebouncedCallback((index: number, key: ScriptKeys, value: string) => {
         setEntries(entries.map((entry, _index) => {
             if (_index === index) {
@@ -22,28 +24,14 @@ const ScriptsPage = () => {
             }
             return entry;
         }));
-        saveEntriesInStore();
     }, 1000);
 
 
     const deleteEntry = (index: number) => {
-        setEntries([...entries.filter((_entry, _index) => {
+        setEntries(entries.filter((_entry, _index) => {
             return _index !== index;
-        })]);
-        saveEntriesInStore();
+        }));
     };
-
-    const loadEntriesFromStore = async ()=>{
-        if (!context) return;
-
-        const { entries } = await context.chrome.storage.local.get(["entries"]);
-
-        setEntries(entries || []);
-    }
-
-    useEffect(()=> {
-        void loadEntriesFromStore();
-    }, []);
 
     const buttons: ButtonProps[] = [
         {
@@ -146,9 +134,7 @@ const ScriptsPage = () => {
                                    placeholder="Keybind" required
                                    onChange={(e) => updateEntry(index, 'keyBind', e.target.value)}/>
                         </td>
-                        <td className="p-6 flex justify-center justify-items-center text-center">
-
-
+                        <td className="p-3 flex justify-center justify-items-center text-center">
                             <PFButton to={'/editor/' + entry.id}
                                   className="me-2" content="Edit" />
                             <PFButton onClick={() => deleteEntry(index)} content="Remove"

@@ -1,0 +1,8 @@
+.cm-editor {
+    height: 100%;
+}
+
+#editor {
+    height: 100%;
+    height: -webkit-fill-available;
+}

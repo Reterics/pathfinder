@@ -1,7 +1,5 @@
 import { createContext } from 'react';
+import {ContextAPI} from "../types/context.ts";
 
-interface ContextAPIInterface {
-    chrome: typeof chrome
-}
 
-export const BrowserContext = createContext<ContextAPIInterface | null>(null);
+export const BrowserContext = createContext<ContextAPI | null>(null);
