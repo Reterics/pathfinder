@@ -28,7 +28,7 @@ const HeaderMenu = () => {
 
     const context = useContext(BrowserContext);
 
-    const homeEntries = (context?.data.entries || []).filter(entry => entry.keyBind === 'home');
+    const homeEntries = (context?.data.entries || []).filter(entry => entry.onHome);
     const isWelcome = !homeEntries.length && pathname === '/';
 
     const menuItems: MenuItemProps[] = menu.map((m, index) => {
@@ -41,20 +41,22 @@ const HeaderMenu = () => {
     });
 
     return (
-        <div className={isWelcome ? 'h-[410px]' : pathname === '/' ? 'h-auto' : 'h-[308px]'}>
+        <div className={isWelcome ? 'h-[410px]' : pathname === '/' || pathname.startsWith('/editor/') ? 'h-auto' : 'h-[308px]'}>
         <img src={isWelcome ? logoBackground : background} className="absolute w-full pointer-events-none z-0 mt-[66px] object-none"
              style={{
                  height: '-webkit-fill-available',
                  objectFit: pathname === '/' ? 'none' : 'cover'
              }} alt="Background"/>
-            <nav className="bg-zinc-900 border-gray-200 w-[690px]">
+            <nav className={!isWelcome && pathname === '/' ? "bg-zinc-900 border-gray-200 min-w-[400px]" : "bg-zinc-900 border-gray-200 w-[690px]"}>
                 <div className="flex flex-wrap items-center justify-between mx-auto p-4">
                     <a href="https://reterics.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
                         <img src={logoWhite} className="h-8" alt="Pathfinder Logo"/>
-                        <span
-                            className="self-center text-2xl font-semibold whitespace-nowrap text-white">Pathfinder</span>
+                        {
+                            (isWelcome || pathname !== '/') && <span
+                                className="self-center text-2xl font-semibold whitespace-nowrap text-white">Pathfinder</span>
+                        }
                     </a>
-                    <MenuBar menu={menuItems} />
+                    <MenuBar menu={menuItems}/>
                 </div>
             </nav>
             {isWelcome && (

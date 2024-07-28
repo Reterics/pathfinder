@@ -9,10 +9,12 @@ export interface InjectedScript {
     name: string,
     keyBind: string,
     content: string,
-    origin?: string
+    origin?: string,
+    onHome?: boolean
 }
 
-export type ScriptKeys  = 'name'|'content'|'keyBind'|'origin';
+export type ScriptStringKey  = 'name'|'content'|'keyBind'|'origin';
+export type ScriptKey  = ScriptStringKey|'onHome';
 
 export interface TextFile {
     value: string|ArrayBuffer|null,

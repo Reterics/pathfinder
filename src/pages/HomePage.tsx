@@ -7,9 +7,8 @@ import PFButton from "../components/PFButton.tsx";
 const HomePage = () => {
     const context = useContext(BrowserContext);
 
-
     const buttons: ButtonProps[] = (context?.data.entries || [])
-        .filter(entry => entry.keyBind === 'home')
+        .filter(entry => entry.onHome)
         .map(entry => {
             return {
                 content: entry.name,
@@ -17,7 +16,7 @@ const HomePage = () => {
             } as ButtonProps
         })
     return (
-        <div className="relative z-50 w-full text-center text-white flex flex-row-reverse p-2">
+        <div className="relative z-50 text-center text-white flex justify-end p-2 max-w-[693px] flex-wrap w-max">
             {buttons.map((button, i) =>
                 (<PFButton {...button}
                            key={'button_' + i}

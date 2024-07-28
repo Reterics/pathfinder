@@ -9,6 +9,7 @@ const PFButton = (props: ButtonProps) => {
                   onClick={props.onClick}
                   className={'pf-button ' + (props.className || '')}>
                 {props.content}
+                {props.children}
             </Link>
         )
     }
@@ -18,6 +19,7 @@ const PFButton = (props: ButtonProps) => {
                 onClick={props.onClick}
                 className={'pf-button ' + (props.className || '')}>
             {props.content}
+            {props.children}
         </button>
     )
 };

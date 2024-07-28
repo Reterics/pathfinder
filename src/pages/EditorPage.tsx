@@ -20,9 +20,10 @@ const EditorPage = () => {
 
     const setEntry = () => {
         if (entry && editorRef.current && editorParentRef.current) {
-            const rawText = ((editorParentRef.current as HTMLElement)
+            const rawText = (((editorParentRef.current as HTMLElement)
                 .querySelector('.cm-content') as HTMLElement)
-                .innerText || '';
+                .innerText || '')
+                .replace(/\n{2}/g, '\n');
 
             // entry.content = rawText;
             const updatedEntries = context?.data.entries.map((entry) => {
@@ -62,7 +63,7 @@ const EditorPage = () => {
     ];
 
     return (
-        <div className="flex flex-col relative h-full">
+        <div className="flex flex-col relative max-h-full">
             <div id="editor" ref={editorParentRef} className="relative overflow-x-auto shadow-md bg-zinc-300 bg-opacity-90"/>
             <div className="bg-white dark:bg-zinc-900 w-100 p-1 flex items-center justify-between flex-row-reverse">
                 <PFButtonGroup buttons={buttons}/>

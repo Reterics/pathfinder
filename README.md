@@ -24,6 +24,22 @@ npm run build
  - import the **firefox** folder via the **Load Temporary Add-on...** button.
    ![FrontPage](./docs/firefox.png)
 
+
+## User Interface
+
+### Quick Access Toolbar - Home Page
+
+![QuickAccessToolbar](./docs/qat.png)
+If we have defined scripts on the home page, then we can "quick execute them" them there by clicking them. 
+
+### Scripts
+
+![Scripts Page](./docs/scripts.png)
+We can declare and save pre-defined scripts that will run on the current open tab via **keyup** events or the **Quick Access Toolbar**
+
+![Editor Page](./docs/editor.png)
+Editing scripts is possible using the internal _limited_ Javascript editor that is available with the **Edit** button.
+
 ## Contribute
 
 There are many ways to [contribute](./CONTRIBUTING.md) to Chromate Extension.
