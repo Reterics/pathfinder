@@ -4,6 +4,7 @@ import { dirname, relative } from 'node:path'
 
 import { crx } from '@crxjs/vite-plugin'
 import manifest from './manifest.firefox.config';
+import { defineViteConfig as define } from './define.config'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -32,5 +33,5 @@ export default defineConfig({
         outDir: 'firefox'
     },
     assetsInclude: ['src/assets/*/**'],
-
+    define
 })

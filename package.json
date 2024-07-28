@@ -4,6 +4,15 @@
   "description": "Pathfinder is a helper Chrome extension",
   "private": true,
   "version": "0.0.1",
+  "repository": {
+    "url": "https://github.com/Reterics/pathfinder",
+    "type": "git"
+  },
+  "author": {
+    "email": "reterics.attila@gmail.com",
+    "url": "https://reterics.com",
+    "name": "Attila Reterics"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",

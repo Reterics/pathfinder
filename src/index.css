@@ -17,6 +17,10 @@ body {
   /*width: 690px;*/ /*690*/
 }
 
+.fill-height-webkit {
+  height: 100%;
+  height: -webkit-fill-available;
+}
 
 @layer components {
   .pf-button {

@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 
 import { crx } from '@crxjs/vite-plugin'
 import manifest from './manifest.config';
+import { defineViteConfig as define } from './define.config'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,5 +14,6 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     outDir: 'chrome'
-  }
+  },
+  define
 })
