@@ -1,6 +1,6 @@
 # ![Logo](./src/assets/logo_white_48.png) Pathfinder
 
-[![build](https://github.com/Reterics/pathfinder/actions/workflows/npm-build-test.yml/badge.svg)](https://github.com/entroped/gpt-cloud-function/actions/workflows/npm-build-test.yml)
+[![build](https://github.com/Reterics/pathfinder/actions/workflows/npm-build-test.yml/badge.svg)](https://github.com/Reterics/pathfinder/actions/workflows/npm-build-test.yml)
 
 
 Chrome Extension to assist for development and day to day tasks.
