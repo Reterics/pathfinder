@@ -58,7 +58,7 @@ export class JSTokenizer {
         }
 
         // Operator of punctuation
-        if ('=;,+-*/()'.includes(char)) {
+        if ('=;,+-*/().'.includes(char)) {
             this.current++;
             return { type: 'operator', value: char };
         }

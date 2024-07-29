@@ -1,4 +1,5 @@
 import {FunctionHolder, JSPStatement, StringObject} from "../../types/interpreter.ts";
+import {getAllValuesByPath} from "../common.ts";
 
 
 export class JSInterpreter {
@@ -9,6 +10,14 @@ export class JSInterpreter {
         this.variables = {};
         this.functions = {
             log: (arg: unknown) => console.log(arg),
+            queryClick: (arg: unknown) => {
+                const node = document.querySelector(arg as string);
+                if (node) {
+                    (node as HTMLDivElement).click();
+                } else {
+                    console.warn('Element is not found with selector: ', arg);
+                }
+            },
         };
         // eslint-disable-next-line no-undef
         this.global = typeof window !== "undefined" ? window : global || {};
@@ -37,13 +46,20 @@ export class JSInterpreter {
                 break;
             case 'functionCall':
                 return this.executeFunctionCall(statement);
+            case 'memberExpression':
+                if (statement.name) {
+                    this.variables[statement.name] = this.evaluateExpression(statement);
+                } else {
+                    this.evaluateExpression(statement);
+                }
+                break;
             default:
                 throw new Error(`Unknown statement type: ${statement.type}`);
         }
     }
 
     evaluateExpression(expression: string | number | JSPStatement | null | undefined): unknown {
-        let x, y;
+        let x, y, object;
         if (!expression || typeof expression !== 'object') {
             return;
         }
@@ -55,6 +71,8 @@ export class JSInterpreter {
                 break;
             case 'number':
                 return Number(expression.value);
+            case 'string':
+                return expression.value;
             case 'binaryExpression':
                 x = this.evaluateExpression(expression.left) as number;
                 y = this.evaluateExpression(expression.right) as number;
@@ -70,6 +88,15 @@ export class JSInterpreter {
                     default:
                         throw new Error(`Unknown operator: ${expression.operator}`);
                 }
+            case 'memberExpression':
+                if (expression.object && expression.object?.value) {
+                    object = expression.object.value as string;
+                }
+                if (expression.property) {
+                    expression.property.name = object + '.' + expression.property.name;
+                    return this.evaluateExpression(expression.property);
+                }
+                return null;
             case 'functionCall':
                 return this.executeFunctionCall(expression);
             default:
@@ -83,9 +110,16 @@ export class JSInterpreter {
         }
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        const func = this.functions[expression.name] || this.global[expression.name];
-        if (typeof func !== 'function') {
-            throw new Error(`Unknown function: ${expression.name}`);
+        let func = this.functions[expression.name] || this.global[expression.name];
+        if (typeof func !== 'function' && expression.name) {
+            const messages = getAllValuesByPath(this.global, expression.name) as (()=>void)[]
+
+            const lastElement = messages[messages.length - 1];
+            if (typeof lastElement === 'function') {
+                func = lastElement;
+            } else {
+                throw new Error(`Unknown function: ${expression.name}`);
+            }
         }
         if (expression.args) {
             const args = expression.args.map(arg => this.evaluateExpression(arg));

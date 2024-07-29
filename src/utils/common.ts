@@ -1,6 +1,6 @@
 import {NestedObject, SearchStack, TextFile} from "../types/scripts.ts";
 
-export const getAllValuesByPath = (obj: NestedObject, path: string): unknown => {
+export const getAllValuesByPath = (obj: NestedObject|typeof globalThis, path: string): unknown => {
     const keys = path.split('.');
     const results = [];
     const stack: SearchStack[] = [{ obj, index: 0 }];

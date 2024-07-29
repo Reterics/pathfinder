@@ -47,11 +47,18 @@ export class JSParser {
     parseExpression(): JSPStatement | undefined {
         let left = this.parsePrimary();
 
-        while (this.currentToken && this.currentToken.type === 'operator' && ['+', '-', '*', '/'].includes(<string>this.currentToken.value)) {
+        while (this.currentToken && this.currentToken.type === 'operator' && ['+', '-', '*', '/', '.'].includes(<string>this.currentToken.value)) {
             const operator = this.currentToken.value as JSPOperator;
             this.proc('operator');
-            const right = this.parsePrimary();
-            left = {type: 'binaryExpression', operator, left, right};
+            if (operator === '.') {
+                const right = this.parsePrimary();
+                left = { type: 'memberExpression', object: left as {
+                        value: string | object; type: JSPType; } | undefined, property: right };
+            } else {
+                const right = this.parsePrimary();
+                left = {type: 'binaryExpression', operator, left, right};
+            }
+
         }
 
         return left;

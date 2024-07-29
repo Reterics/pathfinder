@@ -1,9 +1,9 @@
 
 
 export type JSPType = 'variableDeclaration' | 'binaryExpression' | 'number' | 'identifier' | 'functionCall' |
-    'operator'|'string';
+    'operator'| 'string' | 'memberExpression';
 
-export type JSPOperator = '+' | '-'| '*'| '/';
+export type JSPOperator = '+' | '-'| '*'| '/' | '.';
 
 export interface JSPStatement {
     type: JSPType,
@@ -14,6 +14,9 @@ export interface JSPStatement {
 
     left?: JSPStatement,
     right?: JSPStatement,
+
+    object?: {value: object | string, type: JSPType}
+    property?: JSPStatement
 }
 
 export interface StringObject {
