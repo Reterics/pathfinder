@@ -33,12 +33,12 @@ export class ScriptHandler {
         })
     }
 
-    loadScript({name, keyBind, content, origin}: InjectedScript): void {
+    loadScript({id, name, keyBind, content, origin}: InjectedScript): void {
         if (Object
             .values(this._loaded)
-            .filter(entry => entry.find(l => l.name === name))
+            .filter(entry => entry.find(l => l.id === id))
             .length) {
-            console.warn(`[ScriptHandler] ${name} already loaded.`);
+            console.warn(`[ScriptHandler] ${id} already loaded as ${name}.`);
             return;
         }
 
@@ -49,10 +49,34 @@ export class ScriptHandler {
         // Origin can be /http(s)?:\/\/.+\.com/g
         if (!origin || location.origin.match(new RegExp(origin))) {
             this._loaded[keyBind].push({
+                id,
                 name,
                 content,
                 keyBind
             });
+        }
+    }
+
+    execute(id: number | undefined) {
+        const script = Object.keys(this._loaded)
+            .reduce((out: InjectedScript | undefined, keyBind: string) : InjectedScript | undefined=> {
+                if (!out && Array.isArray(this._loaded[keyBind])) {
+                    out = this._loaded[keyBind].find(script => script.id === id);
+                }
+
+                return out;
+        }, undefined);
+
+        if (script) {
+            const tokenizer = new JSTokenizer(script.content);
+            const parser = new JSParser(tokenizer);
+            const interpreter = new JSInterpreter();
+
+            const parsedCode = parser.parse();
+
+            return interpreter.execute(parsedCode) as Promise<string[]>;
+        } else {
+            console.warn('Script is not found with given id: ' + id);
         }
     }
 }

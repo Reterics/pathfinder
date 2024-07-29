@@ -44,6 +44,19 @@ export class JSTokenizer {
             return { type: 'number', value: num };
         }
 
+        // String literals
+        if (char === '\'' || char === '"') {
+            const quoteType = char;
+            let str = '';
+            char = this.code[++this.current];
+            while (char !== quoteType) {
+                str += char;
+                char = this.code[++this.current];
+            }
+            this.current++; // Move past the closing quote
+            return { type: 'string', value: str };
+        }
+
         // Operator of punctuation
         if ('=;,+-*/()'.includes(char)) {
             this.current++;

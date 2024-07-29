@@ -1,7 +1,7 @@
 
 
 export type JSPType = 'variableDeclaration' | 'binaryExpression' | 'number' | 'identifier' | 'functionCall' |
-    'operator';
+    'operator'|'string';
 
 export type JSPOperator = '+' | '-'| '*'| '/';
 

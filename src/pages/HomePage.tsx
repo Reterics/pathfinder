@@ -12,7 +12,12 @@ const HomePage = () => {
         .map(entry => {
             return {
                 content: entry.name,
-                onClick: ()=>{} // send message to background to execute content-script
+                onClick: ()=> {
+                    // send message to background to execute content-script
+                    if (entry.id) {
+                        context?.use(entry.id, 'entry');
+                    }
+                }
             } as ButtonProps
         })
     return (

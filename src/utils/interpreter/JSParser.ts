@@ -19,7 +19,8 @@ export class JSParser {
 
     parseStatement(): JSPStatement|undefined {
         if( this.currentToken !== null ) {
-            if (this.currentToken.type === 'identifier' && this.currentToken.value === 'var') {
+            if (this.currentToken.type === 'identifier' &&
+                (this.currentToken.value === 'var' || this.currentToken.value === 'const' || this.currentToken.value === 'let')) {
                 return this.parseVariableDeclaration();
             } else if (this.currentToken.type === 'identifier') {
                 return this.parseExpression();
@@ -73,6 +74,10 @@ export class JSParser {
                 const number = this.currentToken.value;
                 this.proc('number');
                 return {type: 'number', value: number};
+            } else if (this.currentToken.type === 'string') {
+                const str = this.currentToken.value;
+                this.proc('string');
+                return { type: 'string', value: str };
             }
         }
 

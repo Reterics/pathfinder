@@ -1,6 +1,6 @@
 import {BrowserContext} from "./BrowserContext.ts";
 import {ReactNode, useEffect, useState} from "react";
-import {ContextData} from "../types/context.ts";
+import {ContextData, ContextDataType} from "../types/context.ts";
 
 export const BrowserProvider = ({ children }: {
     children: ReactNode
@@ -21,6 +21,22 @@ export const BrowserProvider = ({ children }: {
         await getContextData();
     }
 
+    const use = (id: number, type: ContextDataType)=> {
+        console.log('Query tabs');
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            console.log('Active tabs: ', tabs);
+            if (tabs && tabs.length > 0) {
+                return chrome.tabs.sendMessage(tabs[0].id as number, {
+                    type: type,
+                    id: id,
+                    action: 'use'
+                });
+            } else {
+                console.warn('Failed to find active tab');
+            }
+        })
+    }
+
     useEffect(() => {
         void getContextData();
     }, []);
@@ -28,7 +44,8 @@ export const BrowserProvider = ({ children }: {
     return (
         <BrowserContext.Provider value={{
             data: ctxData,
-            setData: updateContextData
+            setData: updateContextData,
+            use: use
         }}>
             {children}
         </BrowserContext.Provider>
