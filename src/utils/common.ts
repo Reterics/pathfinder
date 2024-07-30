@@ -29,6 +29,25 @@ export const getAllValuesByPath = (obj: NestedObject|typeof globalThis, path: st
     return results;
 };
 
+export const getFunctionFromString = (path: string, base = window) => {
+    // Split the path into its parts
+    const pathParts = path.split('.');
+
+    // Use reduce to traverse the window object based on the path parts
+    const func = pathParts.reduce((acc, part) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        return acc && acc[part];
+    }, base);
+
+    // Check if the result is indeed a function
+    if (typeof func !== 'function') {
+        throw new Error(`Path ${path} does not resolve to a function`);
+    }
+
+    return func;
+}
+
 export const downloadFile = (content: string, filename: string, type = "application/json") => {
     const blob = new Blob([content], { type });
     const link = document.createElement("a");

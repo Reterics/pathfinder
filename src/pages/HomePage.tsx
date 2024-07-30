@@ -14,7 +14,7 @@ const HomePage = () => {
                 content: entry.name,
                 onClick: ()=> {
                     // send message to background to execute content-script
-                    if (entry.id) {
+                    if (entry.id || entry.id === 0) {
                         context?.use(entry.id, 'entry');
                     }
                 }

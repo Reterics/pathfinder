@@ -25,3 +25,12 @@ export interface StringObject {
 export interface FunctionHolder {
     [key: string]: (...args: unknown[])=>void
 }
+
+
+export interface IndexedDBStore {
+    [key: string]: unknown[];
+}
+
+export interface IndexedDBTables {
+    [key: string]: IndexedDBStore
+}
