@@ -10,7 +10,7 @@ export class JSInterpreter {
         this.variables = {};
         this.functions = {
             log: (arg: unknown) => console.log(arg),
-            queryClick: (arg: unknown) => {
+            querySelectorClick: (arg: unknown) => {
                 const node = document.querySelector(arg as string);
                 if (node) {
                     (node as HTMLDivElement).click();
@@ -18,6 +18,32 @@ export class JSInterpreter {
                     console.warn('Element is not found with selector: ', arg);
                 }
             },
+            querySelectorValue: (selector: unknown, value: unknown) => {
+                const node = document.querySelector(selector as string);
+                if (node) {
+                    (node as HTMLInputElement).value = value as string;
+                    node.dispatchEvent(new Event('input', {
+                        bubbles: true,
+                        cancelable: true
+                    }))
+                } else {
+                    console.warn('Element is not found with selector: ', selector);
+                }
+            },
+            querySelectorAllClick: (selector: unknown) => {
+                document.querySelectorAll(selector as string)
+                    .forEach(node => (node as HTMLDivElement).click());
+            },
+            querySelectorAllValue: (selector: unknown, value: unknown) => {
+                document.querySelectorAll(selector as string)
+                    .forEach(node => {
+                        (node as HTMLInputElement).value = value as string;
+                        node.dispatchEvent(new Event('input', {
+                            bubbles: true,
+                            cancelable: true
+                        }));
+                    });
+            }
         };
         // eslint-disable-next-line no-undef
         this.global = typeof window !== "undefined" ? window : global || {};

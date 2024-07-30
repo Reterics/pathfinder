@@ -17,21 +17,23 @@ function applyLatestScripts(): void {
 
 }
 
-chrome.runtime.onMessage.addListener(async (message: BrowserMessage/*, sender*/) => {
-    if (message.action === 'use') {
-        switch (message.type) {
-            case 'entry':
-                await scriptInjector.execute(message.id);
-                break;
-            default:
-                console.warn('Unknown type received ', message);
+if (window === top) {
+    chrome.runtime.onMessage.addListener(async (message: BrowserMessage/*, sender*/) => {
+        if (message.action === 'use') {
+            switch (message.type) {
+                case 'entry':
+                    await scriptInjector.execute(message.id);
+                    break;
+                default:
+                    console.warn('Unknown type received ', message);
+            }
+        } else {
+            console.warn('Unknown action received ', message);
         }
-    } else {
-        console.warn('Unknown action received ', message);
-    }
-})
+    })
 
 
 
-console.log('Pathfinder Content Script integrated');
-applyLatestScripts()
+    console.log('Pathfinder Content Script integrated');
+    applyLatestScripts();
+}
