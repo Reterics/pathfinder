@@ -199,7 +199,13 @@ export class JSInterpreter {
             if (typeof lastElement === 'function') {
                 func = lastElement;
             } else {
-                throw new Error(`Unknown function: ${expression.name}`);
+                document.dispatchEvent(new CustomEvent('D1R_connectExtension', {
+                    detail: {
+                        method: expression.name,
+                        args: expression.args ? expression.args.map(arg => this.evaluateExpression(arg)) : undefined,
+                    },
+                }));
+                // throw new Error(`Unknown function: ${expression.name}`);
             }
         }
         if (expression.args) {

@@ -2,6 +2,14 @@ import {ScriptHandler} from "./ScriptHandler.ts";
 import {InjectedScript} from "../types/scripts.ts";
 import {BrowserMessage} from "../types/browser.ts";
 
+const script = document.createElement('script');
+script.src = chrome.runtime.getURL('src/content-script/connector.js');
+(document.head||document.documentElement).appendChild(script);
+script.onload = function(): void {
+    script.remove();
+};
+
+
 const scriptInjector = new ScriptHandler();
 
 function applyLatestScripts(): void {

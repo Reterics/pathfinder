@@ -38,6 +38,10 @@ export default defineManifest(async (env) => ({
         {
             matches: ['*://*/*'],
             resources: ['src/content-script/index.ts'],
+        },
+        {
+            matches: ['*://*/*'],
+            resources: ['src/content-script/connector.js'],
         }
     ],
     icons: {
