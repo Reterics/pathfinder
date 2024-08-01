@@ -201,6 +201,7 @@ export class JSInterpreter {
             } else {
                 document.dispatchEvent(new CustomEvent('D1R_connectExtension', {
                     detail: {
+                        id: new Date().getTime() + '_' + expression.name,
                         method: expression.name,
                         args: expression.args ? expression.args.map(arg => this.evaluateExpression(arg)) : undefined,
                     },
