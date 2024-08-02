@@ -1,8 +1,5 @@
+import {JSPStatement} from "./interpreter.ts";
 
-
-export interface InjectedScripts {
-    [key: string]: InjectedScript[]
-}
 
 export interface InjectedScript {
     id?: number,
@@ -11,6 +8,14 @@ export interface InjectedScript {
     content: string,
     origin?: string,
     onHome?: boolean
+}
+
+export interface ParsedInjectedScript extends InjectedScript{
+    parsed: JSPStatement[]
+}
+
+export interface ParsedInjectedScripts {
+    [key: string]: ParsedInjectedScript[]
 }
 
 export type ScriptStringKey  = 'name'|'content'|'keyBind'|'origin';
