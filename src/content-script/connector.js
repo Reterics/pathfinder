@@ -13,7 +13,7 @@
  */
 
 
-class PathfinderConnector {
+class PFConnector {
     constructor() {
         this._id = 'D1R_connectExtension_b';
 
@@ -68,6 +68,6 @@ class PathfinderConnector {
 }
 
 setTimeout(() => {
-    new PathfinderConnector();
+    new PFConnector();
 }, 0);
 

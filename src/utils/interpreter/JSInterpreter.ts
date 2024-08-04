@@ -1,12 +1,14 @@
 import {FunctionHolder, IndexedDBTables, JSPStatement, StringObject} from "../../types/interpreter.ts";
 import {getFunctionFromString} from "../common.ts";
+import {PFConnectorBackend} from "../connector.ts";
 
 
 export class JSInterpreter {
     variables: StringObject;
     functions: FunctionHolder;
     global: typeof globalThis;
-    constructor() {
+    connector: PFConnectorBackend;
+    constructor(connector: PFConnectorBackend) {
         this.variables = {};
         this.functions = {
             log: (arg: unknown) => console.log(arg),
@@ -97,6 +99,8 @@ export class JSInterpreter {
         };
         // eslint-disable-next-line no-undef
         this.global = typeof window !== "undefined" ? window : global || {};
+
+        this.connector = connector;
     }
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -172,8 +176,13 @@ export class JSInterpreter {
                     object = this.evaluateExpression(expression.object as JSPStatement);
                 }
                 if (expression.property && expression.property.type === 'functionCall') {
-                    expression.property.name = object + '.' + expression.property.name;
-                    return this.evaluateExpression(expression.property);
+                    //expression.property.name = object + '.' + expression.property.name;
+                    return this.evaluateExpression({
+                        name: object + '.' + expression.property.name,
+                        type: 'functionCall',
+                        args: expression.property.args,
+                        value: expression.property.value
+                    });
                 } else if (expression.property && expression.property.type === 'identifier') {
                     return object + '.' + expression.property.value;
                 }
@@ -185,7 +194,7 @@ export class JSInterpreter {
         }
     }
 
-    executeFunctionCall(expression: string | number | JSPStatement | null | undefined): undefined|void|Promise<void> {
+    executeFunctionCall(expression: string | number | JSPStatement | null | undefined): undefined|void|Promise<unknown> {
         if (!expression || typeof expression !== 'object' || typeof expression.name !== 'string') {
             return;
         }
@@ -193,19 +202,15 @@ export class JSInterpreter {
         // @ts-expect-error
         let func = this.functions[expression.name] || this.global[expression.name];
         if (typeof func !== 'function' && expression.name) {
-            const messages = getFunctionFromString(expression.name, this.global as Window & typeof globalThis) as (()=>void)[]
+            const decodedFunction = getFunctionFromString(expression.name, this.global as Window & typeof globalThis) as ()=>void|null;
 
-            const lastElement = messages[messages.length - 1];
-            if (typeof lastElement === 'function') {
-                func = lastElement;
+            if (typeof decodedFunction === 'function') {
+                func = decodedFunction;
             } else {
-                document.dispatchEvent(new CustomEvent('D1R_connectExtension', {
-                    detail: {
-                        id: new Date().getTime() + '_' + expression.name,
-                        method: expression.name,
-                        args: expression.args ? expression.args.map(arg => this.evaluateExpression(arg)) : undefined,
-                    },
-                }));
+                return this.connector.sendMessage({
+                    method: expression.name,
+                    args: expression.args ? expression.args.map(arg => this.evaluateExpression(arg)) : undefined,
+                });
                 // throw new Error(`Unknown function: ${expression.name}`);
             }
         }

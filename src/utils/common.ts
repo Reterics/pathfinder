@@ -29,7 +29,7 @@ export const getAllValuesByPath = (obj: NestedObject|typeof globalThis, path: st
     return results;
 };
 
-export const getFunctionFromString = (path: string, base = window) => {
+export const getFunctionFromString = (path: string, base = window): null|(()=>void) => {
     // Split the path into its parts
     const pathParts = path.split('.');
 
@@ -42,7 +42,8 @@ export const getFunctionFromString = (path: string, base = window) => {
 
     // Check if the result is indeed a function
     if (typeof func !== 'function') {
-        throw new Error(`Path ${path} does not resolve to a function`);
+        // console.warn(`Path ${path} does not resolve to a function`);
+        return null;
     }
 
     return func;
