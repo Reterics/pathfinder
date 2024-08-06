@@ -106,3 +106,25 @@ export const readTextFile = (accept = 'application/json'): Promise<TextFile> => 
         fileInput.click();
     });
 }
+
+
+export const readJSONFile = async (): Promise<object|null> => {
+    const file = await readTextFile();
+    if (!file || !file.value || typeof file.value !== 'string') {
+        return null;
+    }
+
+    let json = null;
+
+    try {
+        json = JSON.parse(file.value)
+    } catch (err) {
+        console.error(err);
+    }
+
+    if (!json) {
+        return null;
+    }
+
+    return json;
+}

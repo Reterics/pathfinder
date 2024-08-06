@@ -1,5 +1,11 @@
 import {IndexedDBTables} from "../../types/interpreter.ts";
-import {readTextFile} from "../common.ts";
+import {downloadFile, readJSONFile} from "../common.ts";
+import {
+    appendIDBStores,
+    appendLStorage,
+    backupIDBDatabase, backupLStorage
+} from "../db.ts";
+import {GeneralObject, IndexedDBDump, SiteBackup} from "../../types/db.ts";
 
 /**
  * Function Library has several pre-defined method to be executed in Content-Scripts against DOM
@@ -47,120 +53,50 @@ export const querySelectorAllValue = (selector: unknown, value: unknown) => {
 };
 
 export const backupIndexedDB = async () => {
-    const backup: IndexedDBTables = {};
+    const backup: IndexedDBTables = await backupIDBDatabase();
 
-    // List all databases
-    const databases: IDBDatabaseInfo[] = await window.indexedDB.databases();
-    for (let i = 0; i < databases.length; i++){
-        const dbInfo: IDBDatabaseInfo = databases[i];
-        const dbName = dbInfo.name;
-        if (!dbName) {
-            continue;
-        }
-        const db: IDBDatabase = await openDatabase(dbName);
-        backup[dbName] = {};
-
-        // List all object stores
-        const objectStores = Array.from(db.objectStoreNames);
-        for (let j = 0; j < objectStores.length; j++){
-            const storeName = objectStores[j];
-            backup[dbName][storeName] = await getAllDataFromObjectStore(db, storeName);
-        }
-        db.close();
-    }
-
-    // Download backup as a JSON file
-    const backupBlob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(backupBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'indexeddb-backup.json';
-    a.click();
-    URL.revokeObjectURL(url);
-
-    async function openDatabase(name: string): Promise<IDBDatabase> {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(name);
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    }
-
-    async function getAllDataFromObjectStore(db: IDBDatabase, storeName: string): Promise<unknown[]> {
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction(storeName, 'readonly');
-            const store = transaction.objectStore(storeName);
-            const request = store.getAll();
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    }
+    downloadFile(JSON.stringify(backup, null, 2), 'indexeddb-backup.json',
+        'application/json');
 };
 
 export const restoreIndexedDB = async () => {
-    const file = await readTextFile();
-    if (!file || !file.value || typeof file.value !== 'string') {
-        return;
+    const backupData = await readJSONFile();
+
+    if (backupData) {
+        await appendIDBStores(backupData as IndexedDBDump);
     }
+};
 
-    let backupData = null;
+export const backupLocalStorage = async () => {
+    const backup: GeneralObject = backupLStorage();
+    downloadFile(JSON.stringify(backup, null, 2), 'lstorage-backup.json',
+        'application/json');
+};
 
-    try {
-        backupData = JSON.parse(file.value)
-    } catch (err) {
-        console.error(err);
+export const restoreLocalStorage = async () => {
+    const backupData = await readJSONFile();
+
+    if (backupData) {
+        appendLStorage(backupData as GeneralObject);
     }
+};
 
-    if (!backupData) {
-        return;
+export const backupDB = async () => {
+    const IDB: IndexedDBTables = await backupIDBDatabase(),
+        LStorage: GeneralObject = backupLStorage();
+
+    downloadFile(JSON.stringify({
+        idb: IDB,
+        lStorage: LStorage
+    }, null, 2), 'backup.json',
+    'application/json');
+};
+
+export const restoreDB = async () => {
+    const backupData = await readJSONFile() as SiteBackup|null;
+
+    if (backupData) {
+        appendLStorage(backupData.lStorage);
+        await appendIDBStores(backupData.idb);
     }
-
-    for (const dbName in backupData) {
-        const dbData = backupData[dbName];
-        const db: IDBDatabase = await openDatabase(dbName, Object.keys(dbData));
-        for (const storeName in dbData) {
-            await populateObjectStore(db, storeName, dbData[storeName]);
-        }
-        db.close();
-    }
-
-    function openDatabase(name: string, storeNames: string[]): Promise<IDBDatabase> {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(name);
-            request.onupgradeneeded = function(event) {
-                let db = request.result;
-
-                if(!db && event.target) {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-expect-error
-                    db = event.target.result;
-                }
-                for (const storeName of storeNames) {
-                    if (!db.objectStoreNames.contains(storeName)) {
-                        db.createObjectStore(storeName, { keyPath: 'id', autoIncrement: true });
-                    }
-                }
-            };
-            request.onsuccess = () => resolve(request.result);
-            request.onerror = () => reject(request.error);
-        });
-    }
-
-    function populateObjectStore(db: IDBDatabase, storeName: string, data: never[]): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            const transaction = db.transaction(storeName, 'readwrite');
-            const store = transaction.objectStore(storeName);
-            for (const item of data) {
-                store.put(item);
-            }
-            transaction.oncomplete = function() {
-                resolve();
-            };
-            transaction.onerror = function(event) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                reject(event.target?.error);
-            };
-        });
-    }
-}
+};
