@@ -30,7 +30,7 @@ export default defineManifest(async (env) => ({
         "webRequest",
         "webNavigation"
     ],
-    permissions: ['storage', 'tabs', "scripting", "activeTab"],
+    permissions: ['storage', 'tabs', "scripting", "activeTab", "contextMenus"],
     web_accessible_resources: [],
     icons: {
         16:  'src/assets/logo_white_16.png',

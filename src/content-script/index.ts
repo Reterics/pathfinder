@@ -44,4 +44,33 @@ if (window === top) {
 
     console.log('Pathfinder Content Script integrated');
     applyLatestScripts();
+
+
+    document.addEventListener("contextmenu", (event) => {
+        let element: HTMLElement | null = event.target as HTMLElement;
+        const path: string[] = [];
+        while (element) {
+            let selector: string = element.nodeName.toLowerCase();
+            if (element.id) {
+                selector += `#${element.id}`;
+                path.unshift(selector);
+                break;
+            } else {
+                // TODO: Work on classnames as well
+                let sibling = element;
+                let nth = 1;
+                while (sibling.previousElementSibling) {
+                    sibling = sibling.previousElementSibling as HTMLElement;
+                    if (sibling.nodeName.toLowerCase() === selector) {
+                        nth++;
+                    }
+                }
+                if (nth != 1) selector += `:nth-of-type(${nth})`;
+            }
+            path.unshift(selector);
+            element = element.parentElement;
+        }
+        const lastSelector = path.join(" > ");
+        chrome.storage.local.set({ lastSelector: lastSelector });
+    });
 }
