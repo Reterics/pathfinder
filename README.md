@@ -38,14 +38,17 @@ If we have defined scripts on the home page, then we can "quick execute them" th
 ### Scripts
 
 ![Scripts Page](./docs/scripts.png)
+
 We can declare and save pre-defined scripts that will run on the current open tab via **keyup** events or the **Quick Access Toolbar**
 
 
 ![Editor Page](./docs/editor.png)
+
 Editing scripts is possible using the internal _limited_ Javascript editor that is available with the **Edit** button.
 
 
 ![Notes Page](./docs/notes.png)
+
 We can add new notes while we are browsing with the contextmenu, and edit them later in the extension.
 
 ## Contribute

@@ -1,6 +1,6 @@
 {
   "name": "pathfinder",
-  "displayName": "Pathfinder React Chrome Extension",
+  "displayName": "Pathfinder Extension",
   "description": "Pathfinder is a helper Chrome extension",
   "private": true,
   "version": "0.0.1",
