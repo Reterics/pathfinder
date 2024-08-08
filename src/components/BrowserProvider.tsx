@@ -7,12 +7,13 @@ export const BrowserProvider = ({ children }: {
 }) => {
 
     const [ctxData, setCtxData] = useState<ContextData>({
-        entries: []
+        entries: [],
+        webNotes: []
     });
 
 
     const getContextData = async () => {
-        const data = await chrome.storage.local.get(["entries"]);
+        const data = await chrome.storage.local.get(["entries", "webNotes"]);
         setCtxData(data as ContextData);
     }
 

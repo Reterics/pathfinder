@@ -17,6 +17,10 @@ const menu = [
         name: 'Scripts',
     },
     {
+        path: '/notes',
+        name: 'Notes',
+    },
+    {
         path: '/about',
         name: 'About',
     }

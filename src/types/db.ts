@@ -17,3 +17,19 @@ export interface SiteBackup {
     idb: IndexedDBTables,
     lStorage: GeneralObject
 }
+
+export interface WebNote {
+    id: string,
+    url?: string,
+    text: string,
+    theme?: 'default'|'pink'|'blue'|'yellow'|'red'|'gray',
+    created: number,
+    modified: number
+}
+
+export type WebNoteKey = 'id' | 'url' | 'text' | 'created' | 'modified'
+
+export interface WebNoteProps extends WebNote {
+    delete: ()=>unknown,
+    update: (key: WebNoteKey, value: string | number) => unknown
+}

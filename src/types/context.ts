@@ -1,8 +1,10 @@
 import {InjectedScript} from "./scripts.ts";
+import {WebNote} from "./db.ts";
 
 
 export interface ContextData {
     entries: InjectedScript[],
+    webNotes: WebNote[]
 }
 
 export type ContextDataType = 'entry';
