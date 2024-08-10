@@ -31,5 +31,6 @@ export type WebNoteKey = 'id' | 'url' | 'text' | 'created' | 'modified'
 
 export interface WebNoteProps extends WebNote {
     delete: ()=>unknown,
-    update: (key: WebNoteKey, value: string | number) => unknown
+    update: (key: WebNoteKey, value: string | number) => unknown,
+    compact?: boolean
 }

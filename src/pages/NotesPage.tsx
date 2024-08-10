@@ -3,10 +3,13 @@ import {BrowserContext} from "../components/BrowserContext.ts";
 import {useDebouncedCallback} from "use-debounce";
 import {WebNote, WebNoteKey} from "../types/db.ts";
 import NoteComponent from "../components/NoteComponent.tsx";
+import {useParams} from "react-router-dom";
 
 
 const NotesPage = () => {
     const context = useContext(BrowserContext);
+
+    const { type} = useParams();
 
     const webNotes = context?.data.webNotes || [];
     const setWebNotes = (data: WebNote[]) => {
@@ -35,11 +38,14 @@ const NotesPage = () => {
             <div className="flex flex-wrap">
                 {
                     webNotes.map((webNote, index) =>
-                        <NoteComponent
-                            {...webNote}
-                            delete={()=>deleteWebNote(index)}
-                            update={(key: WebNoteKey, value: string|number) => updateWebNote(index, key, value) as unknown}
-                        />)
+                        <div className="w-2/4 pe-2">
+                            <NoteComponent
+                                {...webNote}
+                                delete={()=>deleteWebNote(index)}
+                                compact={type === "compact"}
+                                update={(key: WebNoteKey, value: string|number) => updateWebNote(index, key, value) as unknown}
+                            />
+                        </div>)
                 }
             </div>
         </div>

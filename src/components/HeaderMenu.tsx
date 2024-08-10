@@ -17,8 +17,17 @@ const menu = [
         name: 'Scripts',
     },
     {
-        path: '/notes',
         name: 'Notes',
+        submenus: [
+            {
+                path: '/notes/compact',
+                name: 'List',
+            },
+            {
+                path: '/notes/list',
+                name: 'Detailed',
+            }
+        ]
     },
     {
         path: '/about',
@@ -35,7 +44,17 @@ const HeaderMenu = () => {
     const homeEntries = (context?.data.entries || []).filter(entry => entry.onHome);
     const isWelcome = !homeEntries.length && pathname === '/';
 
-    const menuItems: MenuItemProps[] = menu.map((m, index) => {
+    const menuItems: (MenuItemProps|MenuItemProps[])[] = menu.map((m, index) => {
+        if (m.submenus) {
+            return m.submenus.map((sm, smIndex) => {
+                return {
+                    key: 'menu_'+index+'_'+smIndex,
+                    path: sm.path,
+                    name: sm.name,
+                    active: sm.path === pathname
+                } as MenuItemProps;
+            });
+        }
         return {
             key: 'menu_'+index,
             path: m.path,
@@ -64,7 +83,7 @@ const HeaderMenu = () => {
                 </div>
             </nav>
             {isWelcome && (
-                <div className="absolute z-50 w-full text-center text-white m-4 flex flex-col gap-y-2 bottom-px">
+                <div className="absolute z-40 w-full text-center text-white m-4 flex flex-col gap-y-2 bottom-px">
                     <h1 className="text-xl font-bold pb-4">
                         How can we start the journey?
                     </h1>

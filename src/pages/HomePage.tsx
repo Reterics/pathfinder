@@ -21,7 +21,7 @@ const HomePage = () => {
             } as ButtonProps
         })
     return (
-        <div className="relative z-50 text-center text-white flex justify-end p-2 max-w-[693px] flex-wrap w-max">
+        <div className="relative z-40 text-center text-white flex justify-end p-2 max-w-[693px] flex-wrap w-max">
             {buttons.map((button, i) =>
                 (<PFButton {...button}
                            key={'button_' + i}

@@ -15,7 +15,7 @@ const RouterConfig = () => (
                 <Route path="/index.html" element={<HomePage/>}/>
                 <Route path="about" element={<AboutPage/>}/>
                 <Route path="scripts" element={<ScriptsPage/>}/>
-                <Route path="notes" element={<NotesPage/>}/>
+                <Route path="notes/:type" element={<NotesPage/>}/>
                 <Route path="editor/:scriptId" element={<EditorPage/>}/>
                 <Route path="*" element={<NoPage/>}/>
             </Route>
