@@ -54,3 +54,17 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         return saveForLater(info);
     }
 });
+
+chrome.runtime.onMessage.addListener(function(message) {
+    switch (message.action) {
+        case "openOptionsPage":
+            return openOptionsPage();
+        default:
+            break;
+    }
+});
+
+function openOptionsPage(){
+    return chrome.tabs.create({ url: "options.html" }, ()=> console.log)
+    // return chrome.runtime.openOptionsPage();
+}

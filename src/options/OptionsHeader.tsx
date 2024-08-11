@@ -2,59 +2,29 @@ import {Outlet, useLocation} from "react-router-dom";
 import background from "../assets/background.png";
 import logoBackground from "../assets/logo_background.png";
 import logoWhite from "../assets/logo_white_48.png";
-import MenuBar from "./menu/MenuBar.tsx";
+
 import {MenuItemProps} from "../types/ui.ts";
-import {useContext} from "react";
-import {BrowserContext} from "./BrowserContext.ts";
+import MenuBar from "../components/menu/MenuBar.tsx";
+
 
 const menu = [
     {
-        path: '/',
+        path: '/options.html',
         name: 'Home',
     },
     {
-        path: '/scripts',
-        name: 'Scripts',
-    },
-    {
-        name: 'Notes',
-        submenus: [
-            {
-                path: '/notes/compact',
-                name: 'List',
-            },
-            {
-                path: '/notes/list',
-                name: 'Detailed',
-            }
-        ]
-    },
-    {
-        path: '/about',
+        path: '/options.html?page=about',
         name: 'About',
     }
 ];
 
-const HeaderMenu = () => {
+const OptionsHeader = () => {
     const location = useLocation();
     const pathname = location.pathname === '/index.html' ? '/' : location.pathname;
 
-    const context = useContext(BrowserContext);
-
-    const homeEntries = (context?.data.entries || []).filter(entry => entry.onHome);
-    const isWelcome = !homeEntries.length && pathname === '/';
+    const isWelcome = pathname === '/';
 
     const menuItems: (MenuItemProps|MenuItemProps[])[] = menu.map((m, index) => {
-        if (m.submenus) {
-            return m.submenus.map((sm, smIndex) => {
-                return {
-                    key: 'menu_'+index+'_'+smIndex,
-                    path: sm.path,
-                    name: sm.name,
-                    active: sm.path === pathname
-                } as MenuItemProps;
-            });
-        }
         return {
             key: 'menu_'+index,
             path: m.path,
@@ -64,13 +34,13 @@ const HeaderMenu = () => {
     });
 
     return (
-        <div className={isWelcome ? 'h-[410px]' : pathname === '/' || pathname.startsWith('/editor/') ? 'h-auto' : 'h-[308px]'}>
-        <img src={isWelcome ? logoBackground : background} className="absolute w-full pointer-events-none z-0 mt-[66px] object-none"
-             style={{
-                 height: '-webkit-fill-available',
-                 objectFit: pathname === '/' ? 'none' : 'cover'
-             }} alt="Background"/>
-            <nav className={!isWelcome && pathname === '/' ? "bg-zinc-900 border-gray-200 min-w-[400px]" : "bg-zinc-900 border-gray-200 w-[690px]"}>
+        <div className='h-auto w-full'>
+            <img src={pathname === '/' ? logoBackground : background} className="absolute w-full pointer-events-none z-0 mt-[66px] object-none"
+                 style={{
+                     height: '-webkit-fill-available',
+                     objectFit: pathname === '/' ? 'none' : 'cover'
+                 }} alt="Background"/>
+            <nav className="bg-zinc-900 border-gray-200 min-w-[400px]">
                 <div className="flex flex-wrap items-center justify-between mx-auto p-4">
                     <a onClick={() => chrome.runtime.sendMessage({"action": "openOptionsPage"}) } className="flex items-center space-x-3 rtl:space-x-reverse">
                         <img src={logoWhite} className="h-8" alt="Pathfinder Logo"/>
@@ -98,4 +68,4 @@ const HeaderMenu = () => {
     )
 }
 
-export default HeaderMenu;
+export default OptionsHeader;

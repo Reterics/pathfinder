@@ -50,4 +50,8 @@ export default defineManifest(async (env) => ({
         48:  'src/assets/logo_white_48.png',
         128: 'src/assets/logo_white_128.png'
     },
+    options_ui: {
+        "page": "options.html",
+        "browser_style": true
+    }
 }))
