@@ -10,7 +10,7 @@ const MenuItem = (props: MenuItemProps) => {
                   className={
                     props.active ?
                         "block " + py + " px-3 rounded text-white bg-zinc-700" :
-                        "block " + py + " px-3 rounded text-white hover:bg-zinc-700"
+                        "block " + py + " px-3 rounded text-white hover:bg-zinc-800"
                   }
                   onClick={props.onClick}
                   to={props.path}>{props.name}</Link>
